@@ -162,7 +162,20 @@ def admin():
 @app.route('/leaderboard', methods=['POST', 'GET'])
 def leaderboard():
     with open('leaderboard.json', 'r') as f:
-        return "leaderboard"
+        parsedjson = json.load(f)
+        parsedjson = sorted(parsedjson, key=lambda i: i['Time'])
+        topten = []
+        pics = []
+        for x in range(0, 5):
+            topten.append(parsedjson[x])
+            pics.append(topten[x]['Name'] + topten[x]['Date'] + ".jpg")
+        filename0=pics[0]
+        filename1=pics[1]
+        filename2=pics[2]
+        filename3=pics[3]
+        filename4=pics[4]
+        return render_template('leaderboard.html', hm=topten, filename0=filename0, filename1=filename1, filename2=filename2, filename3=filename3, filename4=filename4)
+
 
 class LoginForm(FlaskForm):
     question = StringField('question', validators=[DataRequired()])
@@ -209,7 +222,7 @@ def addtoleaderboard(howlong):
     cam.start()
     img = cam.get_image()
     date = str(datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    pygame.image.save(img, "playerpics/" + user + date + ".jpg")
+    pygame.image.save(img, "static/" + user + date + ".jpg")
     cam.stop()
     player = {"Name": user, "Date": date, "Time": float(howlong)}
     with open('leaderboard.json', 'r') as f:

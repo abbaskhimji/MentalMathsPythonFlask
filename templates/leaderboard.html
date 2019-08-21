@@ -1,31 +1,15 @@
 <html>
 <title>
-    MENTAL MATHS PRACTICE ADMIN PAGE
+    LEADERBOARD
 </title>
 <body>
-<form action = "http://localhost:5000/leaderboard" method = "post">
-    <center>
-        <h1>Number Of Questions Of Each Type<input type = "text" name = "NumberOfQuestions" value="{{ NumberOfQuestions }}"/></h1>
-        <h1>Operators Tested<input type = "text" name = "OperatorsTested" value="{{ OperatorsTested }}"/></h1>
-        <h1></h1>
-        <h1>First Add Low<input type = "text" name = "FirstAddLow" value="{{ FirstAddLow }}"/></h1>
-        <h1>First Add High<input type = "text" name = "FirstAddHigh" value="{{ FirstAddHigh }}"/></h1>
-        <h1>Second Add Low<input type = "text" name = "SecondAddLow" value="{{ SecondAddLow }}"/></h1>
-        <h1>Second Add High<input type = "text" name = "SecondAddHigh" value="{{ SecondAddHigh }}"/></h1>
-        <h1>First Subtract Low<input type = "text" name = "FirstSubtractLow" value="{{ FirstSubtractLow }}"/></h1>
-        <h1>First Subtract High<input type = "text" name = "FirstSubtractHigh" value="{{ FirstSubtractHigh }}"/></h1>
-        <h1>Second Subtract Low<input type = "text" name = "SecondSubtractLow" value="{{ SecondSubtractLow }}"/></h1>
-        <h1>Second Subtract High<input type = "text" name = "SecondSubtractHigh" value="{{ SecondSubtractHigh }}"/></h1>
-        <h1>First Multiply Low<input type = "text" name = "FirstMultiplyLow" value="{{ FirstMultiplyLow }}"/></h1>
-        <h1>First Multiply High<input type = "text" name = "FirstMultiplyHigh" value="{{ FirstMultiplyHigh }}"/></h1>
-        <h1>Second Multiply Low<input type = "text" name = "SecondMultiplyLow" value="{{ SecondMultiplyLow }}"/></h1>
-        <h1>Second Multiply High<input type = "text" name = "SecondMultiplyHigh" value="{{ SecondMultiplyHigh }}"/></h1>
-        <h1>First Divide Low<input type = "text" name = "FirstDivideLow" value="{{ FirstDivideLow }}"/></h1>
-        <h1>First Divide High<input type = "text" name = "FirstDivideHigh" value="{{ FirstDivideHigh }}"/></h1>
-        <h1>Second Divide Low<input type = "text" name = "SecondDivideLow" value="{{ SecondDivideLow }}"/></h1>
-        <h1>Second Divide High<input type = "text" name = "SecondDivideHigh" value="{{ SecondDivideHigh }}"/></h1>
-        <input type = "submit" value = "Save"/>
-    </center>
-</form>
+<center>
+    <h1>LeaderBoard</h1>
+</center>
+<h1 style="color:blue;font-size:50px; height:10%; width:80%">{{ hm[0]['Name'] }} {{ hm[0]['Date'] }} {{ hm[0]['Time'] }}<img src="{{ url_for('static', filename=filename0) }}" width="100" height="100" align="left"></h1>
+<h1 style="color:red;font-size:50px; height:10%; width:80%">{{ hm[1]['Name'] }} {{ hm[1]['Date'] }} {{ hm[1]['Time'] }}<img  src="{{ url_for('static', filename=filename1) }}" width="100" height="100" align="left"></h1>
+<h1 style="color:yellow;font-size:50px; height:10%; width:80%">{{ hm[2]['Name'] }} {{ hm[2]['Date'] }} {{ hm[2]['Time'] }}<img src="{{ url_for('static', filename=filename2) }}" width="100" height="100" align="left"></h1>
+<h1 style="color:green;font-size:50px; height:10%; width:80%">{{ hm[3]['Name'] }} {{ hm[3]['Date'] }} {{ hm[3]['Time'] }}<img src="{{ url_for('static', filename=filename3) }}" width="100" height="100" align="left"></h1>
+<h1 style="color:mediumpurple;font-size:50px; height:10%; width:80%">{{ hm[4]['Name'] }} {{ hm[4]['Date'] }} {{ hm[4]['Time'] }}<img src="{{ url_for('static', filename=filename4) }}" width="100" height="100" align="left"></h1>
 </body>
 </html>
