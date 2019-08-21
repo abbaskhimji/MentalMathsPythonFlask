@@ -13,8 +13,8 @@ from flask import Flask, redirect, url_for, request, render_template
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
-blah = [], []
-hey = 0
+questionandanswertuple = [], []
+currentquestion = 0
 correct = 0
 start = time.time()
 done = time.time()
@@ -27,12 +27,12 @@ configParser.read(configFilePath)
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        global blah
-        global hey
+        global questionandanswertuple
+        global currentquestion
         global correct
         global user
-        blah = [], []
-        hey = 0
+        questionandanswertuple = [], []
+        currentquestion = 0
         correct = 0
         user = request.form['nm']
         return redirect(url_for('welcome', name=user))
@@ -43,8 +43,8 @@ def login():
 @app.route('/question/<name>', methods=['POST', 'GET'])
 @app.route('/welcome/<name>', methods=['POST', 'GET'])
 def welcome(name):
-    global blah
-    global hey
+    global questionandanswertuple
+    global currentquestion
     global correct
     global done
     global start
@@ -58,59 +58,59 @@ def welcome(name):
     if request.method == 'GET':
         return render_template('welcome.html', name=name, NumberOfQuestions=int(configParser.get('Config', 'NumberOfQuestions'))*len(configParser.get('Config', 'OperatorsTested')))
 
-    if request.method == 'POST' and blah[0].__len__() == 0:
-        blah = generate_questions_and_answers(int(configParser.get('Config', 'FirstAddLow')),
-                                              int(configParser.get('Config', 'FirstAddHigh')),
-                                              int(configParser.get('Config', 'SecondAddLow')),
-                                              int(configParser.get('Config', 'SecondAddHigh')),
-                                              int(configParser.get('Config', 'FirstSubtractLow')),
-                                              int(configParser.get('Config', 'FirstSubtractHigh')),
-                                              int(configParser.get('Config', 'SecondSubtractLow')),
-                                              int(configParser.get('Config', 'SecondSubtractHigh')),
-                                              int(configParser.get('Config', 'FirstMultiplyLow')),
-                                              int(configParser.get('Config', 'FirstMultiplyHigh')),
-                                              int(configParser.get('Config', 'SecondMultiplyLow')),
-                                              int(configParser.get('Config', 'SecondMultiplyHigh')),
-                                              int(configParser.get('Config', 'FirstDivideLow')),
-                                              int(configParser.get('Config', 'FirstDivideHigh')),
-                                              int(configParser.get('Config', 'SecondDivideLow')),
-                                              int(configParser.get('Config', 'SecondDivideHigh')),
-                                              configParser.get('Config', 'OperatorsTested'),
-                                              str(int(configParser.get('Config', 'NumberOfQuestions')) + 1))
+    if request.method == 'POST' and questionandanswertuple[0].__len__() == 0:
+        questionandanswertuple = generate_questions_and_answers(int(configParser.get('Config', 'FirstAddLow')),
+                                                                int(configParser.get('Config', 'FirstAddHigh')),
+                                                                int(configParser.get('Config', 'SecondAddLow')),
+                                                                int(configParser.get('Config', 'SecondAddHigh')),
+                                                                int(configParser.get('Config', 'FirstSubtractLow')),
+                                                                int(configParser.get('Config', 'FirstSubtractHigh')),
+                                                                int(configParser.get('Config', 'SecondSubtractLow')),
+                                                                int(configParser.get('Config', 'SecondSubtractHigh')),
+                                                                int(configParser.get('Config', 'FirstMultiplyLow')),
+                                                                int(configParser.get('Config', 'FirstMultiplyHigh')),
+                                                                int(configParser.get('Config', 'SecondMultiplyLow')),
+                                                                int(configParser.get('Config', 'SecondMultiplyHigh')),
+                                                                int(configParser.get('Config', 'FirstDivideLow')),
+                                                                int(configParser.get('Config', 'FirstDivideHigh')),
+                                                                int(configParser.get('Config', 'SecondDivideLow')),
+                                                                int(configParser.get('Config', 'SecondDivideHigh')),
+                                                                configParser.get('Config', 'OperatorsTested'),
+                                                                str(int(configParser.get('Config', 'NumberOfQuestions')) + 1))
         form = LoginForm()
-        form.question.label = str(blah[0][hey])
+        form.question.label = str(questionandanswertuple[0][currentquestion])
         return render_template('question.html', form=form, name=name)
 
     if request.method == 'POST':
         form = LoginForm()
         trier = request.form['nm']
-        if trier == str(blah[1][hey]):
-            hey = hey + 1
+        if trier == str(questionandanswertuple[1][currentquestion]):
+            currentquestion = currentquestion + 1
             correct = correct + 1
-            if hey == blah[0].__len__():
+            if currentquestion == questionandanswertuple[0].__len__():
                 done = time.time()
                 howlong = str(done-start)
                 if float(howlong) > (len(configParser.get('Config', 'OperatorsTested'))*13)*int(configParser.get('Config', 'NumberOfQuestions')):
                     addtoleaderboard(howlong)
-                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You drive a BMW", filename="level1.jpg")
+                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(currentquestion), message="Well Done - You drive a BMW", filename="level1.jpg")
                 elif float(howlong) > (len(configParser.get('Config', 'OperatorsTested'))*12)*int(configParser.get('Config', 'NumberOfQuestions')):
                     addtoleaderboard(howlong)
-                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You drive an Audi", filename="level2.jpg")
+                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(currentquestion), message="Well Done - You drive an Audi", filename="level2.jpg")
                 elif float(howlong) > (len(configParser.get('Config', 'OperatorsTested'))*11)*int(configParser.get('Config', 'NumberOfQuestions')):
                     addtoleaderboard(howlong)
-                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You drive a Lamborghini", filename="level3.jpg")
+                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(currentquestion), message="Well Done - You drive a Lamborghini", filename="level3.jpg")
                 elif float(howlong) > (len(configParser.get('Config', 'OperatorsTested'))*10)*int(configParser.get('Config', 'NumberOfQuestions')):
                     addtoleaderboard(howlong)
-                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You drive a Lamborghini", filename="level4.jpg")
+                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(currentquestion), message="Well Done - You drive a Lamborghini", filename="level4.jpg")
                 elif float(howlong) > (len(configParser.get('Config', 'OperatorsTested'))*9)*int(configParser.get('Config', 'NumberOfQuestions')):
                     addtoleaderboard(howlong)
-                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You Drive a Mclaren P1", filename="level5.jpg")
+                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(currentquestion), message="Well Done - You Drive a Mclaren P1", filename="level5.jpg")
                 else:
                     addtoleaderboard(howlong)
-                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You fly a Plane", filename="level6.jpg")
-            form.question.label = str(blah[0][hey])
+                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(currentquestion), message="Well Done - You fly a Plane", filename="level6.jpg")
+            form.question.label = str(questionandanswertuple[0][currentquestion])
         else:
-            form.question.label = str(blah[0][hey])
+            form.question.label = str(questionandanswertuple[0][currentquestion])
         return render_template('question.html', form=form, name=name)
 
 
