@@ -3,12 +3,12 @@ import time
 import random
 import os
 import datetime
-import ecapture as ec
+import json
+import pygame.camera
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from flask import Flask, redirect, url_for, request, render_template
-# from ecapture import ecapture as ec
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
@@ -51,6 +51,9 @@ def welcome(name):
 
     if name == "admin":
         return redirect(url_for('admin'))
+
+    if name == "leaderboard":
+        return redirect(url_for('leaderboard'))
 
     if request.method == 'GET':
         return render_template('welcome.html', name=name, NumberOfQuestions=int(configParser.get('Config', 'NumberOfQuestions'))*len(configParser.get('Config', 'OperatorsTested')))
@@ -99,9 +102,12 @@ def welcome(name):
                 elif float(howlong) > (len(configParser.get('Config', 'OperatorsTested'))*10)*int(configParser.get('Config', 'NumberOfQuestions')):
                     addtoleaderboard(howlong)
                     return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You drive a Lamborghini", filename="level4.jpg")
-                else:
+                elif float(howlong) > (len(configParser.get('Config', 'OperatorsTested'))*9)*int(configParser.get('Config', 'NumberOfQuestions')):
                     addtoleaderboard(howlong)
                     return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You Drive a Mclaren P1", filename="level5.jpg")
+                else:
+                    addtoleaderboard(howlong)
+                    return render_template('done.html', form=form, name=name, howlong=howlong, correct=str(correct), hey=str(hey), message="Well Done - You fly a Plane", filename="level6.jpg")
             form.question.label = str(blah[0][hey])
         else:
             form.question.label = str(blah[0][hey])
@@ -153,6 +159,11 @@ def admin():
         return redirect(url_for('login'))
 
 
+@app.route('/leaderboard', methods=['POST', 'GET'])
+def leaderboard():
+    with open('leaderboard.json', 'r') as f:
+        return "leaderboard"
+
 class LoginForm(FlaskForm):
     question = StringField('question', validators=[DataRequired()])
     submit = SubmitField('Enter')
@@ -192,18 +203,20 @@ def generate_questions_and_answers(add_1low, add_1high, add_2low, add_2high, sub
 
 
 def addtoleaderboard(howlong):
-    date = str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-    entry = '{"Name":"' + user + '","Date":"' + date + '","Time":"' + howlong + '"}'
-    print(entry)
-    entry = bytes(entry, 'utf-8')
-    print(entry)
-    with open('leaderboard.json', 'rb+') as f:
-        f.seek(-3, os.SEEK_END)
-        f.write(','.encode())
-        f.write(entry)
-        f.write(']'.encode())
-        f.write('}'.encode())
-        f.truncate()
+    pygame.camera.init()
+    pygame.camera.list_cameras()
+    cam = pygame.camera.Camera("/dev/video0", (640, 480))
+    cam.start()
+    img = cam.get_image()
+    date = str(datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
+    pygame.image.save(img, "playerpics/" + user + date + ".jpg")
+    cam.stop()
+    player = {"Name": user, "Date": date, "Time": float(howlong)}
+    with open('leaderboard.json', 'r') as f:
+        parsedjson = json.load(f)
+        parsedjson.append(player)
+    with open('leaderboard.json', 'w') as f:
+        json.dump(parsedjson, f)
     return
 
 
