@@ -4,7 +4,7 @@ import random
 import os
 import datetime
 import json
-import pygame.camera
+# import pygame.camera
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
@@ -216,14 +216,14 @@ def generate_questions_and_answers(add_1low, add_1high, add_2low, add_2high, sub
 
 
 def addtoleaderboard(howlong):
-    pygame.camera.init()
-    pygame.camera.list_cameras()
-    cam = pygame.camera.Camera("/dev/video0", (640, 480))
-    cam.start()
-    img = cam.get_image()
     date = str(datetime.datetime.now().strftime("%d-%m-%Y-%H-%M-%S"))
-    pygame.image.save(img, "static/" + user + date + ".jpg")
-    cam.stop()
+    # pygame.camera.init()
+    # pygame.camera.list_cameras()
+    # cam = pygame.camera.Camera("/dev/video0", (640, 480))
+    # cam.start()
+    # img = cam.get_image()
+    # pygame.image.save(img, "static/" + user + date + ".jpg")
+    # cam.stop()
     player = {"Name": user, "Date": date, "Time": float(howlong)}
     with open('leaderboard.json', 'r') as f:
         parsedjson = json.load(f)
