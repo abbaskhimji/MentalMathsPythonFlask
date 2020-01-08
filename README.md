@@ -27,7 +27,7 @@ Type in your name to start
 
 #Admin and Leaderboard Access
 
-to make maths easier or harder and chnage number of questions....type in admin when prompted to login at http://localhost:5000/login
+to make maths easier or harder and change number of questions....type in admin when prompted to login at http://localhost:5000/login
     
 to access leaderboard....type in leaderboard when prompted to login at http://localhost:5000/login
 
